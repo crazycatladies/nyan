@@ -1,0 +1,56 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+dependencies {
+    api 'ftc.crazycatladies:schrodinger:0.1'
+	implementation files('libs/RobotCore.jar')
+	implementation files('libs/Hardware.jar')
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'ftc.crazycatladies'
+            artifactId = 'nyan'
+            version = '0.1'
+
+            from components.java
+        }
+    }
+    
+    repositories {
+        maven {
+            url = "$buildDir/repo"
+        }
+    }
+}
+
+bintray {
+	user = System.getProperty('bintray.user')
+	key = System.getProperty('bintray.key')
+	publications = ['maven']
+
+	pkg {
+		repo = 'maven'
+		name = 'nyan'
+		userOrg = 'crazycatladies'
+		licenses = ['MIT']
+		vcsUrl = 'https://github.com/crazycatladies/nyan'
+		version {
+			name = '0.1.0'
+			desc = '0.1.0'
+			released  = new Date()
+		}
+	}
+}
