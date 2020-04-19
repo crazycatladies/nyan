@@ -4,6 +4,11 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 repositories {
     jcenter()
     mavenLocal()
