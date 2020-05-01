@@ -54,6 +54,18 @@ public class DcMotorEx extends Subsystem {
         this.hubNum = hubNum;
         this.lastPower = 0.0;
         this.isForward = isForward;
+
+        moveToSM = new StateMachine<MoveContext>("MotorMoveTo");
+        moveToSM.once((state, mc) -> {
+            setTargetPosition(mc.position);
+            setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            setPower(mc.power);
+        });
+        moveToSM.repeat((state, mc) -> {
+            if (!isBusy() || state.getTimeInState().seconds() > mc.timeout) {
+                state.next();
+            }
+        });
     }
 
     @Override
@@ -189,16 +201,7 @@ public class DcMotorEx extends Subsystem {
         return getCurrentPosition() - getLastPosition();
     }
 
-    protected StateMachine<MoveContext> moveToSM =
-        new StateMachine<MoveContext>("MotorMoveTo").once((state, mc) -> {
-            setTargetPosition(mc.position);
-            setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            setPower(mc.power);
-        }).repeat((state, mc) -> {
-            if (!isBusy() || state.getTimeInState().seconds() > mc.timeout) {
-                state.transition();
-            }
-        });
+    protected StateMachine<MoveContext> moveToSM;
 
     public void moveTo(int position, double timeout, double power) {
         runSM(moveToSM, new MoveContext(position, timeout, power));

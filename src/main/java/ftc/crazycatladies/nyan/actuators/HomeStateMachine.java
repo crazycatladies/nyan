@@ -15,17 +15,19 @@ public class HomeStateMachine extends StateMachine<Object> {
 
             if (homeSwitch.isPressed())
                 motor.setPower(power * (reverse ? -1 : 1));
-        }).repeat((state, context) -> {
+        });
+        repeat((state, context) -> {
             // Wait until not at home, then lower to home (raise if reversed)
             if (!homeSwitch.isPressed()) {
                 motor.setPower(-power * (reverse ? -1 : 1));
-                state.transition();
+                state.next();
             }
-        }).repeat((state, context) -> {
+        });
+        repeat((state, context) -> {
             // Once home switch is activated, stop and reset encoder
             if (homeSwitch.isPressed()) {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                state.transition();
+                state.next();
             }
         });
     }

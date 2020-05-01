@@ -42,13 +42,15 @@ public class ServoEx extends Subsystem {
 
     public ServoEx(String name) {
         this.name = name;
-        servoMoveSM = new StateMachine<ServoMoveContext>("ServoMove").once((state, smc) -> {
+        servoMoveSM = new StateMachine<ServoMoveContext>("ServoMove");
+        servoMoveSM.once((state, smc) -> {
             smc.start = getPosition();
-        }).repeat((state, smc) -> {
+        });
+        servoMoveSM.repeat((state, smc) -> {
             double pos = calcPos(smc.start, smc.end, state.getTimeInState().seconds() * smc.posPerSec);
             setPosition(pos);
             if (pos == smc.end)
-                state.transition();
+                state.next();
         });
     }
 
