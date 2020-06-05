@@ -18,7 +18,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-// Class maintains information each cycle to reduce time spent talking to hub
+/**
+ * Subsystem wrapper for DcMotor. Caches data to avoid unnecessary communication with hub.
+ * Provides a state machine for running to a specified position
+ */
 public class DcMotorEx extends Subsystem {
 
     private static class MoveContext {
@@ -49,6 +52,12 @@ public class DcMotorEx extends Subsystem {
     private DcMotor.RunMode mode;
 
 
+    /**
+     * @param name hardware map name of DC motor
+     * @param hubNum number of hub that this motor is connected to. Used for retrieving information
+     *              from bulk data
+     * @param isForward
+     */
     public DcMotorEx(String name, int hubNum, boolean isForward) {
         this.name = name;
         this.hubNum = hubNum;

@@ -14,13 +14,13 @@ import java.util.Scanner;
 
 public class RedBlueAutoConfig {
     boolean isBlueSide = true;
-    public final String configFile;
+    protected final String configFile;
     
     public RedBlueAutoConfig(String configFile) {
 		this.configFile = configFile;
 	}
 
-    void readConfig() {
+    public void readConfig() {
         RobotLog.i("Read Config");
         try (Scanner sc = new Scanner(new File("sdcard", configFile))) {
             isBlueSide = sc.nextBoolean();
@@ -31,7 +31,7 @@ public class RedBlueAutoConfig {
         }
     }
 
-    void configConsole(Telemetry telemetry, GamepadEx g1, GamepadEx g2) {
+    public void configConsole(Telemetry telemetry, GamepadEx g1, GamepadEx g2) {
         telemetry.addData("Side (A)", isBlueSide ? "Blue" : "Red");
         telemetry.addData(">", "Press Start to Save");
 
