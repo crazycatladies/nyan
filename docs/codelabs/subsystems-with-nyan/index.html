@@ -22,11 +22,11 @@
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid="UA-139335019-3"
-                  id="subsystems-with-schrodinger"
+                  id="subsystems-with-nyan"
                   title="Subsystems for FTC Robots with Nyan"
                   environment="web"
                   feedback-link="https://github.com/crazycatladies/nyan/issues">
-    
+
       <google-codelab-step label="Introduction" duration="0">
         <p class="image-container"><img style="width: 624.00px" src="img/8d6de6ea5448b4cb.jpeg"></p>
 <p><strong>Last Updated:</strong> 2020-05-23</p>
@@ -63,7 +63,7 @@
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Getting set up" duration="10">
         <h2 is-upgraded><strong>Install Android Studio</strong></h2>
 <p>If you do not already have Android Studio installed, follow the instructions for <a href="https://github.com/FIRST-Tech-Challenge/SKYSTONE/wiki/Installing-Android-Studio" target="_blank">Installing Android Studio</a></p>
@@ -72,7 +72,7 @@
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Add Nyan to your project" duration="5">
         <h2 is-upgraded>Adding the crazycatladies Maven repository</h2>
 <p>You&#39;ll need to let Android Studio (the gradle build system, really) know from where it can download the schrodinger library. Add <code>maven { url &#39;https://dl.bintray.com/crazycatladies/maven&#39; }</code> to the repositories section at the bottom of the <code>build.gradle</code> file in the root folder of your project.</p>
@@ -135,7 +135,7 @@ allprojects {
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Create a Tele Op Mode that uses Nyan" duration="5">
         <h2 is-upgraded><strong>Create a new opmode class</strong></h2>
 <p>Create a new Java class in the <code>org.firstinspires.ftc.teamcode</code> package of the <code>TeamCode</code> module called <code>NyanTeleOpMode</code>. If you&#39;re not sure how to create an op mode class, refer to <a href="https://github.com/FIRST-Tech-Challenge/SKYSTONE/wiki/Creating-and-Running-an-Op-Mode-(Android-Studio)" target="_blank">Creating and Running an Op Mode (Android Studio)</a></p>
@@ -201,7 +201,7 @@ robot.stop();</code></pre>
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Add more subsystems" duration="5">
         <h2 is-upgraded><strong>Child subsystems: The next generation 👶</strong></h2>
 <p>The subsystem model is not very interesting with only a single subsystem. When we give Robot some child subsystems, though, the usefulness of this approach will begin to appear.</p>
@@ -249,7 +249,7 @@ public Robot() {
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Use state machines inside subsystems" duration="5">
         <p>Nyan subsystems become even more useful in combination with state machines. Subsystems can define a number of state machines that can control its operation and then switch between these. Take a look at the new version of the Drivetrain class that shows this idea. (Only the body of the class is shown for brevity)</p>
 <aside class="warning"><p>Nyan uses another Crazy Cat Ladies library called Schrodinger to implement state machines. If you haven&#39;t already, we encourage you to complete our <a href="https://crazycatladies.github.io/schrodinger/codelabs/state-machines-with-schrodinger" target="_blank">Codelab on Schrodinger</a></p>
@@ -283,7 +283,7 @@ public void stop() {
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Nyan subsystems for sensors and actuators" duration="5">
         <h2 is-upgraded>Sensor and actuator subsystems made easy</h2>
 <p>Nyan includes Subsystem classes for commonly-used actuators and sensors so that you can easily compose your own subsystems that include these. The Nyan classes automatically provide logging for these, and they perform caching which reuses data already retrieved for subsequent repeated requests. Snapping in one of these sensor or actuator subsystems gives you a lot of functionality with little effort.</p>
@@ -323,7 +323,7 @@ public void moveTo(ElbowPosition elbowPosition) {
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Nyan Autonomous Op Modes" duration="5">
         <h2 is-upgraded><strong>Awesome autonomous automatically</strong></h2>
 <p>Nyan provides the AbstractAuto class to help you create your own awesome autonomous op mode. It includes the concept of auto config, which you can use to provide configuration for the execution of your op mode while it is initialized. The RedBlueAutoConfig class provides a simple implementation that allows you to indicate whether the robot is on the red or blue side of the field. You can create your own implementation that would provide inputs for specific navigation adjustments or options that you can use to select from a range of strategies at game time.</p>
@@ -353,7 +353,7 @@ public class AwesomeAuto extends AbstractAuto {
 
 
       </google-codelab-step>
-    
+
   </google-codelab>
 
   <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
