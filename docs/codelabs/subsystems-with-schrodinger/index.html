@@ -1,0 +1,365 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Subsystems for FTC Robots with Nyan</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-139335019-3"
+                  id="subsystems-with-schrodinger"
+                  title="Subsystems for FTC Robots with Nyan"
+                  environment="web"
+                  feedback-link="https://github.com/crazycatladies/nyan/issues">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p class="image-container"><img style="width: 624.00px" src="img/8d6de6ea5448b4cb.jpeg"></p>
+<p><strong>Last Updated:</strong> 2020-05-23</p>
+<h2 is-upgraded><strong>What is Nyan?</strong></h2>
+<p>Nyan is a Java library for use in FTC robot control systems that helps with building subsystems. It is named after <a href="http://www.nyan.cat/" target="_blank">http://www.nyan.cat/</a>, because your robot will leave a rainbow trail behind it if you use this library 😉</p>
+<h3 is-upgraded><strong>What is a Subsystem?</strong></h3>
+<p>A subsystem is a self-contained system within a larger system. In FTC, complex control systems are best organized into multiple Java classes. Mapping these classes to parts of the robot that make a conceptual unit is helpful.</p>
+<h3 is-upgraded><strong>Why use Nyan to implement Subsystems?</strong></h3>
+<p>Nyan&#39;s architecture is based on the Composite design pattern, where objects are composed of objects that are composed, etc. This is helpful to subdivide a robot&#39;s control system as in the following example:</p>
+<p>Robot, is composed of</p>
+<p>....Ball throwing system, is composed of</p>
+<p>........Ball collecting system, is composed of</p>
+<p>............Motor</p>
+<p>............Color Sensor</p>
+<p>........Flywheel system, is composed of</p>
+<p>............Motor</p>
+<p>............Touch Sensor</p>
+<p>....Drivetrain system, is composed of...</p>
+<p>Nyan builds on another library, <a href="https://github.com/crazycatladies/schrodinger" target="_blank">Schrodinger</a>, to implement state machines for subsystems. This can be very useful to allow for multiple subsystems to perform a complex series of operations simultaneously. Nyan also uses a data logging system from Schrodinger that provides an easy way to get data which can be used to troubleshoot the operation of your robot.</p>
+<h2 is-upgraded><strong>What you&#39;ll build</strong></h2>
+<p>In this codelab, you&#39;re going to create op modes for an FTC robot that use the Nyan library to implement subsystems.</p>
+<h2 class="checklist" is-upgraded><strong>What you&#39;ll learn</strong></h2>
+<ul class="checklist">
+<li>How to install Nyan into your FTC Android Studio project</li>
+<li>How to create subsystems using Nyan</li>
+</ul>
+<h2 is-upgraded><strong>What you&#39;ll need</strong></h2>
+<ul>
+<li>A computer that is able to run Android Studio</li>
+<li>Android phones which are capable of serving as Driver Station &amp; Robot Controller in order to test the op modes, or an Android Driver Station plus a Rev Robotics Control Hub</li>
+</ul>
+<aside class="warning"><p><strong>Note:</strong> This codelab is not intended for those who are completely new to the use of Android Studio for FTC robot programming. Please start by completing the entire <a href="https://github.com/FIRST-Tech-Challenge/SKYSTONE/wiki/Android-Studio-Tutorial" target="_blank">Android Studio Tutorial</a> if you have not used Android Studio to create an OpMode previously.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Getting set up" duration="10">
+        <h2 is-upgraded><strong>Install Android Studio</strong></h2>
+<p>If you do not already have Android Studio installed, follow the instructions for <a href="https://github.com/FIRST-Tech-Challenge/SKYSTONE/wiki/Installing-Android-Studio" target="_blank">Installing Android Studio</a></p>
+<h2 is-upgraded><strong>Create the project</strong></h2>
+<p>If you are familiar with git, create a new clone of the <a href="https://github.com/FIRST-Tech-Challenge/SkyStone.git" target="_blank">FTC project repository</a> on your computer. Otherwise, just follow these instructions for <a href="https://github.com/FIRST-Tech-Challenge/SKYSTONE/wiki/Downloading-the-Android-Studio-Project-Folder" target="_blank">Downloading the Android Studio Project Folder</a> </p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add Nyan to your project" duration="5">
+        <h2 is-upgraded>Adding the crazycatladies Maven repository</h2>
+<p>You&#39;ll need to let Android Studio (the gradle build system, really) know from where it can download the schrodinger library. Add <code>maven { url &#39;https://dl.bintray.com/crazycatladies/maven&#39; }</code> to the repositories section at the bottom of the <code>build.gradle</code> file in the root folder of your project.</p>
+<aside class="special"><p>If you have already completed the <a href="https://crazycatladies.github.io/schrodinger/codelabs/state-machines-with-schrodinger" target="_blank">Schrodinger codelab</a> and are using the same project, then you do not have to repeat this step</p>
+</aside>
+<h3 is-upgraded><strong>build.gradle</strong></h3>
+<pre><code>/**
+* Top-level build file for ftc_app project.
+*
+* It is extraordinarily rare that you will ever need to edit this file.
+*/
+buildscript {
+   repositories {
+       google()
+       jcenter()
+   }
+   dependencies {
+       classpath &#39;com.android.tools.build:gradle:3.4.1&#39;
+   }
+}
+
+// This is now required because aapt2 has to be downloaded from the
+// google() repository beginning with version 3.2 of the Android Gradle Plugin
+allprojects {
+   repositories {
+       google()
+       jcenter()
+       maven { url &#39;https://dl.bintray.com/crazycatladies/maven&#39; }
+   }
+}</code></pre>
+<h2 is-upgraded><strong>Add the schrodinger &amp; nyan dependencies</strong></h2>
+<p>You&#39;ll make your project dependent on Nyan and Schrodinger, which will cause Android Studio (gradle, really) to download the library, by adding <code>implementation &#39;ftc.crazycatladies:schrodinger:0.1.1&#39;</code> and <code>implementation &#39;ftc.crazycatladies:nyan:0.1&#39;</code> to the end of the dependencies section in <code>TeamCode/build.release.gradle</code></p>
+<aside class="special"><p>If you have already completed the <a href="https://crazycatladies.github.io/schrodinger/codelabs/state-machines-with-schrodinger" target="_blank">Schrodinger codelab</a> and are using the same project, then you&#39;ll only need to add the dependency for Nyan</p>
+</aside>
+<h3 is-upgraded><strong>TeamCode/build.release.gradle</strong></h3>
+<pre><code>dependencies {
+   implementation project(&#39;:FtcRobotController&#39;)
+   implementation (name: &#39;RobotCore-release&#39;, ext: &#39;aar&#39;)
+   implementation (name: &#39;Hardware-release&#39;, ext: &#39;aar&#39;)
+   implementation (name: &#39;FtcCommon-release&#39;, ext: &#39;aar&#39;)
+   implementation (name: &#39;WirelessP2p-release&#39;, ext:&#39;aar&#39;)
+   implementation (name: &#39;tfod-release&#39;, ext:&#39;aar&#39;)
+   implementation (name: &#39;tensorflow-lite-0.0.0-nightly&#39;, ext:&#39;aar&#39;)
+   implementation &#39;ftc.crazycatladies:schrodinger:0.1.1&#39;
+   implementation &#39;ftc.crazycatladies:nyan:0.1&#39;
+}</code></pre>
+<h2 is-upgraded><strong>Update build settings to enable Java 8</strong></h2>
+<p>Nyan uses Java 8 features, and you&#39;ll probably want to do the same in your own code. You can enable Java 8 by changing the <code>compileOptions</code> section in <code>build.common.gradle</code> (in the root folder of the project):</p>
+<pre><code>compileOptions {
+   sourceCompatibility JavaVersion.VERSION_1_8
+   targetCompatibility JavaVersion.VERSION_1_8
+}</code></pre>
+<aside class="special"><p>Again, if you have already completed the <a href="https://crazycatladies.github.io/schrodinger/codelabs/state-machines-with-schrodinger" target="_blank">Schrodinger codelab</a> and are using the same project, then you do not have to repeat this step</p>
+</aside>
+<h2 is-upgraded><strong>Update gradle</strong></h2>
+<p>After changing and saving these files, you should be able to update gradle by clicking &#34;Sync Now&#34; in the bar which appears at the top of these files:</p>
+<p class="image-container"><img style="width: 624.00px" src="img/64baeddec544d315.png"></p>
+<p>If everything has gone well, your project will now reference the downloaded schrodinger &amp; nyan external libraries, which you can see in the &#34;Project&#34; view of the Project window:</p>
+<p class="image-container"><img style="width: 549.50px" src="img/736f2c006fee153f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create a Tele Op Mode that uses Nyan" duration="5">
+        <h2 is-upgraded><strong>Create a new opmode class</strong></h2>
+<p>Create a new Java class in the <code>org.firstinspires.ftc.teamcode</code> package of the <code>TeamCode</code> module called <code>NyanTeleOpMode</code>. If you&#39;re not sure how to create an op mode class, refer to <a href="https://github.com/FIRST-Tech-Challenge/SKYSTONE/wiki/Creating-and-Running-an-Op-Mode-(Android-Studio)" target="_blank">Creating and Running an Op Mode (Android Studio)</a></p>
+<p>Start by adding basic code which will display the x &amp; y values for the left stick of gamepad1.</p>
+<h3 is-upgraded>NyanTeleOpMode.java</h3>
+<pre><code>package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp(name=&#34;NyanTeleOp&#34;)
+public class NyanTeleOpMode extends LinearOpMode {
+   @Override
+   public void runOpMode() throws InterruptedException {
+       waitForStart();
+
+       while (opModeIsActive()) {
+           telemetry.addData(&#34;x&#34;, gamepad1.left_stick_x);
+           telemetry.addData(&#34;y&#34;, gamepad1.left_stick_y);
+           telemetry.update();
+       }
+   }
+}</code></pre>
+<p>Test this out with a gamepad connected to your Driver Station phone.</p>
+<h2 is-upgraded><strong>Add a subsystem class</strong></h2>
+<p>First we&#39;ll add a subsystem class (&#34;Robot&#34;) that represents the entire robot. This will later enable us to cascade actions down to all the component subsystems in the robot. Robot inherits subsystem capabilities by extending the Subsystem class. The code for the class is as follows.</p>
+<h3 is-upgraded><strong>Robot.java</strong></h3>
+<pre><code>package org.firstinspires.ftc.teamcode;
+
+import org.json.JSONObject;
+
+import ftc.crazycatladies.nyan.subsystem.Subsystem;
+import ftc.crazycatladies.schrodinger.log.DataLogger;
+
+public class Robot extends Subsystem {
+   @Override
+   public void log() {
+       super.log();
+       JSONObject json = DataLogger.createJsonObject(this.getClass().getSimpleName(), null);
+       DataLogger.putOpt(json, &#34;action&#34;, &#34;log&#34;);
+       logger.log(json);
+   }
+}</code></pre>
+<p>From the tele-op mode class, we need to invoke the Robot class at the times when it needs an opportunity to respond to events like initialization, starting, looping, stopping, etc. For this, change the body of the NyanTeleOpMode to the following:</p>
+<h3 is-upgraded><strong>NyanTeleOpMode.java</strong></h3>
+<pre><code>Robot robot = new Robot();
+robot.init(hardwareMap, new OpModeTime(this));
+waitForStart();
+
+if (opModeIsActive())
+   robot.start();
+
+while (opModeIsActive()) {
+   robot.loop(null);
+   telemetry.addData(&#34;x&#34;, gamepad1.left_stick_x);
+   telemetry.addData(&#34;y&#34;, gamepad1.left_stick_y);
+   telemetry.update();
+   robot.log();
+}
+
+robot.stop();</code></pre>
+<p>Build and run your op mode. Stop the op mode one second after starting. The op mode will automatically create a log named NyanTeleOpMode-1234.log (where 1234 is replaced with a timestamp) on the robot controller sdcard. In the log you&#39;ll see that the subsystem creates a log entry for each iteration of the tele op loop.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add more subsystems" duration="5">
+        <h2 is-upgraded><strong>Child subsystems: The next generation 👶</strong></h2>
+<p>The subsystem model is not very interesting with only a single subsystem. When we give Robot some child subsystems, though, the usefulness of this approach will begin to appear.</p>
+<p>Add the following two classes:</p>
+<h3 is-upgraded><strong>Arm.java</strong></h3>
+<pre><code>package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse;
+import java.util.Map;
+import ftc.crazycatladies.nyan.subsystem.Subsystem;
+
+public class Arm extends Subsystem {
+   @Override
+   public void loop(Map&lt;Integer, LynxGetBulkInputDataResponse&gt; bulkDataResponse) {
+       super.loop(bulkDataResponse);
+
+       // Adjust motor power based on desired position of arm
+   }
+}</code></pre>
+<h3 is-upgraded><strong>Drivetrain.java</strong></h3>
+<pre><code>package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse;
+import java.util.Map;
+import ftc.crazycatladies.nyan.subsystem.Subsystem;
+
+public class Drivetrain extends Subsystem {
+   @Override
+   public void loop(Map&lt;Integer, LynxGetBulkInputDataResponse&gt; bulkDataResponse) {
+       super.loop(bulkDataResponse);
+
+       // Adjust power levels of motors according to current direction, velocity, etc.
+   }
+}</code></pre>
+<p>Then, add the following to the body of the Robot class to add the children:</p>
+<h3 is-upgraded><strong>Robot.java</strong></h3>
+<pre><code>private final Drivetrain drivetrain = new Drivetrain();
+private final Arm arm = new Arm();
+
+public Robot() {
+   subsystems.add(drivetrain);
+   subsystems.add(arm);
+}</code></pre>
+<p>As you can see, it was quite easy to add subsystems to our robot, and now we can override methods like start(), stop(), log(), etc. in those subsystems to add additional functionality. In a sense, Subsystem classes are &#34;pre-wired&#34; to participate in all the operations that take place in an op mode, so that you don&#39;t have to do that yourself.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use state machines inside subsystems" duration="5">
+        <p>Nyan subsystems become even more useful in combination with state machines. Subsystems can define a number of state machines that can control its operation and then switch between these. Take a look at the new version of the Drivetrain class that shows this idea. (Only the body of the class is shown for brevity)</p>
+<aside class="warning"><p>Nyan uses another Crazy Cat Ladies library called Schrodinger to implement state machines. If you haven&#39;t already, we encourage you to complete our <a href="https://crazycatladies.github.io/schrodinger/codelabs/state-machines-with-schrodinger" target="_blank">Codelab on Schrodinger</a></p>
+</aside>
+<h3 is-upgraded><strong>Drivetrain.java</strong></h3>
+<pre><code>StateMachine driveSM = new StateMachine(&#34;driveSM&#34;);
+StateMachine spinSM = new StateMachine(&#34;spinSM&#34;);
+
+public Drivetrain() {
+   driveSM.repeat((state, context) -&gt; {
+       // Adjust power levels of motors according to current direction, velocity, etc.
+   });
+
+   spinSM.repeat((state, context) -&gt; {
+       // Adjust power levels of motors to cause spinning
+   });
+}
+
+public void drive() {
+   runSM(driveSM, null);
+}
+
+public void spin() {
+   runSM(spinSM, null);
+}
+
+public void stop() {
+   currentSM.stop();
+}</code></pre>
+<p>We&#39;ve only used trivial example state machines here, but it is possible to use ones that are very complex.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Nyan subsystems for sensors and actuators" duration="5">
+        <h2 is-upgraded>Sensor and actuator subsystems made easy</h2>
+<p>Nyan includes Subsystem classes for commonly-used actuators and sensors so that you can easily compose your own subsystems that include these. The Nyan classes automatically provide logging for these, and they perform caching which reuses data already retrieved for subsequent repeated requests. Snapping in one of these sensor or actuator subsystems gives you a lot of functionality with little effort.</p>
+<p>These are the current subsystem implementations in Nyan:</p>
+<ul>
+<li>ColorSensorEx</li>
+<li>DistanceSensorEx</li>
+<li>RevTouchSensorEx</li>
+<li>DcMotorEx</li>
+<li>ServoEx</li>
+</ul>
+<h2 is-upgraded>Special subsystems for actuators</h2>
+<p>One thing that we commonly found a need for when creating the control systems for our robots was to move a servo or motor to a certain position out of a set of options. The Nyan classes MultiPositionMotor and MultiPositionServo make it easy to implement this.</p>
+<p>In the following code (body of class shown only), we add a subsystem which controls the position of the servo which serves as the elbow of our arm. The options for the position of the elbow are defined in the ElbowPosition enumeration. The moveTo function which re-positions the servo accepts, as first parameter, the new position and, as second parameter, the speed at which to sweep the servo to the new position.</p>
+<aside class="warning"><p>The following code assumes the presence of a servo named ‘elbow&#39; in the robot configuration. It won&#39;t run successfully without it.</p>
+</aside>
+<h3 is-upgraded><strong>Arm.java</strong></h3>
+<pre><code>public enum ElbowPosition implements ServoPosition {
+   HOLD(0.95), CAPTURE(0.3), RECEIVE(0.37), PLACE(0.5);
+
+   private final double pos;
+   ElbowPosition(double pos) { this.pos = pos; }
+   @Override public double getPosition() { return pos; }
+}
+
+MultiPositionServo&lt;ElbowPosition&gt; elbow = new MultiPositionServo&lt;&gt;(&#34;elbow&#34;, ElbowPosition.HOLD);
+
+public Arm() {
+   subsystems.add(elbow);
+}
+
+public void moveTo(ElbowPosition elbowPosition) {
+   elbow.moveTo(elbowPosition, 0.5);
+}</code></pre>
+<p>Now, from your Robot class you are able to move the arm with code like:</p>
+<pre><code>arm.moveTo(Arm.ElbowPosition.CAPTURE);</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Nyan Autonomous Op Modes" duration="5">
+        <h2 is-upgraded><strong>Awesome autonomous automatically</strong></h2>
+<p>Nyan provides the AbstractAuto class to help you create your own awesome autonomous op mode. It includes the concept of auto config, which you can use to provide configuration for the execution of your op mode while it is initialized. The RedBlueAutoConfig class provides a simple implementation that allows you to indicate whether the robot is on the red or blue side of the field. You can create your own implementation that would provide inputs for specific navigation adjustments or options that you can use to select from a range of strategies at game time.</p>
+<h3 is-upgraded><strong>AwesomeAuto.java</strong></h3>
+<pre><code>package org.firstinspires.ftc.teamcode;
+
+import ftc.crazycatladies.nyan.auto.AbstractAuto;
+import ftc.crazycatladies.nyan.auto.RedBlueAutoConfig;
+import ftc.crazycatladies.schrodinger.state.StateMachine;
+
+public class AwesomeAuto extends AbstractAuto {
+   RedBlueAutoConfig conf = new RedBlueAutoConfig(&#34;awesomeauto.conf&#34;);
+
+   public AwesomeAuto() {
+       robot = new Robot();
+   }
+
+   @Override protected void configConsole() { conf.configConsole(telemetry, g1, g2); }
+   @Override protected void readConfig() { conf.readConfig(); }
+
+   @Override
+   protected StateMachine stateMachine() {
+       return new AwesomeAutoStateMachine();
+   }
+}</code></pre>
+<p>The real magic of your autonomous then comes down to the collection of subsystems in the Robot class (and its children) and the series of operations that you specify in the AwesomeAutoStateMachine.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

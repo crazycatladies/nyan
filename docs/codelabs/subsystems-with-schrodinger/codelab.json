@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-06-07T01:02:40Z",
+  "id": "subsystems-with-schrodinger",
+  "duration": 40,
+  "title": "Subsystems for FTC Robots with Nyan",
+  "authors": "FTC Crazy Cat Ladies (12827)",
+  "summary": "In this codelab, you'll create FTC robot op modes that use Nyan to implement subsystems",
+  "source": "1U0B2-jCUsZrwsnuWepv7i47umkpPvSaGTUDiakwtZIQ",
+  "theme": "subsystems",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "Subsystems"
+  ],
+  "tags": [
+    "ftc-android"
+  ],
+  "feedback": "https://github.com/crazycatladies/nyan/issues",
+  "ga": "UA-139335019-3",
+  "url": "subsystems-with-schrodinger"
+}
