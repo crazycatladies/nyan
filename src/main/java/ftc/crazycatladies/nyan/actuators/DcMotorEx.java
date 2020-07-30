@@ -150,7 +150,7 @@ public class DcMotorEx extends Subsystem {
 
     public int getCurrentPosition() {
         if (currentPosition == null) {
-            RobotLog.i("Getting motor armPosition outside of bulk call");
+            RobotLog.i("Getting motor " + name + " outside of bulk call");
             currentPosition = motor.getCurrentPosition();
         }
 
