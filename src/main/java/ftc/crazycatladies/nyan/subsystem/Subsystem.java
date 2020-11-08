@@ -22,9 +22,7 @@ public abstract class Subsystem {
     protected List<Subsystem> subsystems = new LinkedList<>();
     protected StateMachine<?> currentSM;
 
-    public Subsystem() {}
-
-    public Subsystem(Subsystem ... children) {
+    public void addSubsystems(Subsystem ... children) {
         for (Subsystem s : children)
             subsystems.add(s);
     }
