@@ -22,6 +22,13 @@ public abstract class Subsystem {
     protected List<Subsystem> subsystems = new LinkedList<>();
     protected StateMachine<?> currentSM;
 
+    public Subsystem() {}
+
+    public Subsystem(Subsystem ... children) {
+        for (Subsystem s : children)
+            subsystems.add(s);
+    }
+
     /**
      * Initializes the subsystem (and its children) with information from the OpMode and setup the logger.
      * Intended to be called during OpMode.init. Override to implement actual init activities,
