@@ -20,7 +20,7 @@ public class BulkDataFetcher {
     public Map<Integer, LynxGetBulkInputDataResponse> getBulkDataResponse() {
         HashMap<Integer, LynxGetBulkInputDataResponse> bulkDataResponse = new HashMap<Integer, LynxGetBulkInputDataResponse>();
         try {
-            for (Object hub : expansionHubs) {
+            for (LynxModule hub : expansionHubs) {
                 LynxGetBulkInputDataCommand bulkCommand = new LynxGetBulkInputDataCommand((LynxModuleIntf) hub);
                 LynxGetBulkInputDataResponse dataResponse = bulkCommand.sendReceive();
                 bulkDataResponse.put(((LynxModuleIntf) hub).getModuleAddress(), dataResponse);

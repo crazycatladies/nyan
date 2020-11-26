@@ -12,6 +12,7 @@ import ftc.crazycatladies.schrodinger.log.DataLogger;
 import ftc.crazycatladies.schrodinger.opmode.OpModeTime;
 import ftc.crazycatladies.schrodinger.state.StateMachine;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
@@ -103,7 +104,7 @@ public class DcMotorEx extends Subsystem {
             LynxGetBulkInputDataResponse bulkData = bulkDataResponse.get(hubNum);
             if (bulkData != null) {
                 int portNumber = motor.getPortNumber();
-                currentPosition = bulkData.getEncoder(portNumber);
+                currentPosition = bulkData.getEncoder(portNumber) * (isForward ? 1 : -1) * (motor.getMotorType().getOrientation() == Rotation.CW ? 1 : -1);
                 isBusy = !bulkData.isAtTarget(portNumber);
             }
         }
@@ -132,10 +133,6 @@ public class DcMotorEx extends Subsystem {
         if (json.length() > 2) {
             logger.log(json);
         }
-    }
-
-    public void setDirection(DcMotor.Direction direction) {
-        motor.setDirection(direction);
     }
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zpb) {
