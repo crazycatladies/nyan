@@ -19,7 +19,8 @@ public class ServoEx extends Subsystem {
     public static class ServoMoveContext {
         double start, end, posPerSec;
 
-        public ServoMoveContext(double end, double posPerSec) {
+        public ServoMoveContext(double start, double end, double posPerSec) {
+            this.start = start;
             this.end = end;
             this.posPerSec = posPerSec;
         }
@@ -43,9 +44,6 @@ public class ServoEx extends Subsystem {
     public ServoEx(String name) {
         this.name = name;
         servoMoveSM = new StateMachine<ServoMoveContext>("ServoMove");
-        servoMoveSM.once((state, smc) -> {
-            smc.start = getPosition();
-        });
         servoMoveSM.repeat((state, smc) -> {
             double pos = calcPos(smc.start, smc.end, state.getTimeInState().seconds() * smc.posPerSec);
             setPosition(pos);
@@ -92,7 +90,7 @@ public class ServoEx extends Subsystem {
         super.loop(bulkDataResponse);
     }
 
-    // Calculate the new armPosition for a servo, going a certain distance towards, but not past a target
+    // Calculate the new position for a servo, going a certain distance towards, but not past a target
     private static double calcPos(double start, double target, double dist) {
         double signum = Math.signum(target - start);
         double pos = target;
@@ -104,7 +102,7 @@ public class ServoEx extends Subsystem {
     }
 
     public void moveTo(double end, double posPerSec) {
-        runSM(servoMoveSM, new ServoMoveContext(end, posPerSec));
+        runSM(servoMoveSM, new ServoMoveContext(getPosition(), end, posPerSec));
     }
 
 }

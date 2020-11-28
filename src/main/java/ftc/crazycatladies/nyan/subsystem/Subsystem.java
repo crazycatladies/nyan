@@ -10,6 +10,7 @@ import java.util.Map;
 import ftc.crazycatladies.schrodinger.log.DataLogger;
 import ftc.crazycatladies.schrodinger.opmode.OpModeTime;
 import ftc.crazycatladies.schrodinger.state.StateMachine;
+import ftc.crazycatladies.schrodinger.state.StateFunction;
 
 /**
  * Abstract base class for subsystems following the composite design pattern. Has methods like
@@ -124,5 +125,16 @@ public abstract class Subsystem {
                 status.addAll(sStatus);
         }
         return status;
+    }
+
+    public StateMachine<?> getCurrentStateMachine() {
+        return currentSM;
+    }
+
+    public StateFunction waitFor() {
+        return (state, context) -> {
+            if (isDone())
+                state.next();
+        };
     }
 }
