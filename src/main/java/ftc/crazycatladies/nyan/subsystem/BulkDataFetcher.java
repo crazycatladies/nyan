@@ -17,7 +17,7 @@ public class BulkDataFetcher {
         this.expansionHubs = expansionHubs;
     }
 
-    public Map<Integer, LynxGetBulkInputDataResponse> getBulkDataResponse() {
+    public Map<Integer, LynxGetBulkInputDataResponse> getBulkDataResponse() throws InterruptedException {
         HashMap<Integer, LynxGetBulkInputDataResponse> bulkDataResponse = new HashMap<Integer, LynxGetBulkInputDataResponse>();
         try {
             for (LynxModule hub : expansionHubs) {
@@ -25,8 +25,6 @@ public class BulkDataFetcher {
                 LynxGetBulkInputDataResponse dataResponse = bulkCommand.sendReceive();
                 bulkDataResponse.put(((LynxModuleIntf) hub).getModuleAddress(), dataResponse);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } catch (LynxNackException e) {
             e.printStackTrace();
         }

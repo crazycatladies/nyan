@@ -1,8 +1,8 @@
 package ftc.crazycatladies.nyan.sensors;
 
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse;
-import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.LinkedList;
@@ -12,28 +12,40 @@ import java.util.Map;
 import ftc.crazycatladies.nyan.subsystem.Subsystem;
 import ftc.crazycatladies.schrodinger.opmode.OpModeTime;
 
-public class RevTouchSensorEx extends Subsystem {
+public class TouchSensorEx extends Subsystem {
     String name;
     int hubNum, portNum;
-    RevTouchSensor rts;
+    TouchSensor rt;
     Boolean isPressed;
+    Class hwMapClass;
 
-    public RevTouchSensorEx(String name, int hubNum, int portNum) {
+    public TouchSensorEx(String name, int hubNum, int portNum, Class hwMapClass) {
         this.name = name;
         this.hubNum = hubNum;
         this.portNum = portNum;
+        this.hwMapClass = hwMapClass;
     }
 
     @Override
     public void init(HardwareMap hwMap, OpModeTime time) {
         super.init(hwMap, time);
-        rts = hwMap.get(RevTouchSensor.class, name);
+        rt = (TouchSensor) hwMap.get(hwMapClass, name);
     }
 
     @Override
-    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
-        isPressed = null;
+    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         super.loop(bulkDataResponse);
+        _loop(bulkDataResponse);
+    }
+
+    @Override
+    public void initLoop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
+        super.initLoop(bulkDataResponse);
+        _loop(bulkDataResponse);
+    }
+
+    private void _loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+        isPressed = null;
         if (bulkDataResponse != null) {
             LynxGetBulkInputDataResponse bulkData = bulkDataResponse.get(hubNum);
             if (bulkData != null) {
@@ -45,7 +57,7 @@ public class RevTouchSensorEx extends Subsystem {
     public boolean isPressed() {
         if (isPressed == null) {
             RobotLog.i("Getting touch sensor isPressed outside of bulk call");
-            isPressed = rts.isPressed();
+            isPressed = rt.isPressed();
         }
         return isPressed;
     }

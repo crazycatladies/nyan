@@ -32,7 +32,7 @@ public class ColorSensorEx extends Subsystem {
     }
 
     @Override
-    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         super.loop(bulkDataResponse);
         red = null;
         green = null;

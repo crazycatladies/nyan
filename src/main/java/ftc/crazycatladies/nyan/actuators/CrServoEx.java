@@ -60,7 +60,7 @@ public class CrServoEx extends Subsystem {
     }
 
     @Override
-    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         isPowerSetThisLoop = false;
         super.loop(bulkDataResponse);
     }

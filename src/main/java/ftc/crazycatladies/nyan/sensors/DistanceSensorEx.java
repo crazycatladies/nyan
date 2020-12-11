@@ -38,7 +38,7 @@ public class DistanceSensorEx extends Subsystem {
     }
 
     @Override
-    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         super.loop(bulkDataResponse);
         distance = null;
     }

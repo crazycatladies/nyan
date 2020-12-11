@@ -87,7 +87,18 @@ public class DcMotorEx extends Subsystem {
     }
 
     @Override
-    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
+        _loop(bulkDataResponse);
+        super.loop(bulkDataResponse);
+    }
+
+    @Override
+    public void initLoop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
+        _loop(bulkDataResponse);
+        super.initLoop(bulkDataResponse);
+    }
+
+    private void _loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
         if (power != null)
             lastPower = power;
 
@@ -108,8 +119,6 @@ public class DcMotorEx extends Subsystem {
                 isBusy = !bulkData.isAtTarget(portNumber);
             }
         }
-
-        super.loop(bulkDataResponse);
     }
 
     @Override
@@ -221,10 +230,14 @@ public class DcMotorEx extends Subsystem {
         motor.setPIDFCoefficients(runMode, pidfCoefficients);
     }
 
+    public String getDetailedName() {
+        return this.getClass().getSimpleName() + ":" + name;
+    }
+
     @Override
     public List<String> status() {
         List<String> status = new LinkedList<>();
-        status.add(this.getClass().getSimpleName() + ":" + getCurrentPosition());
+        status.add(getDetailedName() + ":pos:" + getCurrentPosition());
         return status;
     }
 }

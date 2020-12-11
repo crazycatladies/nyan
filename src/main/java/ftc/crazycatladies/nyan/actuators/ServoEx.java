@@ -85,7 +85,7 @@ public class ServoEx extends Subsystem {
     }
 
     @Override
-    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         isPositionSetThisLoop = false;
         super.loop(bulkDataResponse);
     }

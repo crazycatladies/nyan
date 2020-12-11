@@ -18,7 +18,7 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
     protected GamepadEx g2;
     protected R robot;
 
-    void initialization() {
+    void initialization() throws InterruptedException {
         telemetry.addData(">", "start init");
         telemetry.update();
 
@@ -32,6 +32,7 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
 
         while (!isStopRequested() && !isStarted()) {
             configConsole();
+            robot.initLoop(null);
             telemetry.addData("time", time.seconds());
             telemetry.update();
             idle();

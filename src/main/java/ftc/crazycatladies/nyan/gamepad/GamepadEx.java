@@ -33,6 +33,7 @@ public class GamepadEx {
     private boolean evaluate(boolean pressed, String buttonName) {
         // Wasn't pressed anyway
         if (!pressed) {
+            // If this was the last pressed, clear out
             if (buttonName.equals(lastPressButton)) {
                 lastPressButton = null;
                 lastPressTime = 0;

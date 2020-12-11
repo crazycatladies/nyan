@@ -42,6 +42,11 @@ public abstract class Subsystem {
             s.init(hwMap, time);
     }
 
+    public void initLoop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
+        for (Subsystem s : subsystems)
+            s.initLoop(bulkDataResponse);
+    }
+
     /**
      * Start the subsystem (and its children). Intended to be called during OpMode.start.
      * Override to implement actual start activities, but in most cases preserve base class
@@ -60,12 +65,12 @@ public abstract class Subsystem {
      * This method also invokes the subsystem's current state machine if one is set and not yet done.
      * @param bulkDataResponse contains bulk data from expansion/control hub for increased performance.
      */
-    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+    public void loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         loopChildren(bulkDataResponse);
         runCurrentSM();
     }
 
-    protected void loopChildren(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+    protected void loopChildren(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         for (Subsystem s : subsystems)
             s.loop(bulkDataResponse);
     }

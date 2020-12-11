@@ -2,11 +2,11 @@ package ftc.crazycatladies.nyan.actuators;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import ftc.crazycatladies.nyan.sensors.RevTouchSensorEx;
+import ftc.crazycatladies.nyan.sensors.TouchSensorEx;
 import ftc.crazycatladies.schrodinger.state.StateMachine;
 
 public class HomeStateMachine extends StateMachine<Object> {
-    public HomeStateMachine(String name, final DcMotorEx motor, final RevTouchSensorEx homeSwitch, final boolean reverse, double power) {
+    public HomeStateMachine(String name, final DcMotorEx motor, final TouchSensorEx homeSwitch, final boolean reverse, double power) {
         super(name);
 
         once((state, context) -> {
