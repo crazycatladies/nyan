@@ -40,6 +40,7 @@ public class ServoEx extends Subsystem {
     Double position;
     boolean isPositionSetThisLoop;
     private final StateMachine<ServoMoveContext> servoMoveSM;
+    private final StateMachine<ServoMoveContext> servoMoveImmedSM;
 
     public ServoEx(String name) {
         this.name = name;
@@ -48,6 +49,13 @@ public class ServoEx extends Subsystem {
             double pos = calcPos(smc.start, smc.end, state.getTimeInState().seconds() * smc.posPerSec);
             setPosition(pos);
             if (pos == smc.end)
+                state.next();
+        });
+
+        servoMoveImmedSM = new StateMachine<ServoMoveContext>("ServoMoveImmed");
+        servoMoveImmedSM.once((state, context) -> setPosition(context.end));
+        servoMoveImmedSM.repeat((state, context) -> {
+            if (state.getTimeInState().seconds() > context.end - context.start)
                 state.next();
         });
     }
@@ -105,4 +113,7 @@ public class ServoEx extends Subsystem {
         runSM(servoMoveSM, new ServoMoveContext(getPosition(), end, posPerSec));
     }
 
+    public void moveImmedTo(double end) {
+        runSM(servoMoveImmedSM, new ServoMoveContext(getPosition(), end, -1));
+    }
 }

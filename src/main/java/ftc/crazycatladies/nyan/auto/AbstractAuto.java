@@ -30,9 +30,13 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
         g1 = new GamepadEx(gamepad1);
         g2 = new GamepadEx(gamepad2);
 
+        autoInit();
+
         while (!isStopRequested() && !isStarted()) {
             configConsole();
             robot.initLoop(null);
+            autoInitLoop();
+
             telemetry.addData("time", time.seconds());
             telemetry.update();
             idle();
@@ -46,6 +50,10 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
     protected void readConfig() {
     }
 
+    protected void autoInit() {}
+
+    protected void autoInitLoop() {}
+
     @Override
     public void runOpMode() throws InterruptedException {
         initialization();
@@ -58,6 +66,7 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
             sm.run();
             robot.log();
             telemetry.addData("time", time.seconds());
+            telemetry.addData("status", robot.status());
             telemetry.update();
         }
 
