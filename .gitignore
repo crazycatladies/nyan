@@ -8,3 +8,5 @@ build
 gradle.properties
 
 **/.DS_STORE
+/.idea/caches/build_file_checksums.ser
+/local.properties
