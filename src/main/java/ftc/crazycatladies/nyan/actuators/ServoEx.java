@@ -55,7 +55,7 @@ public class ServoEx extends Subsystem {
         servoMoveImmedSM = new StateMachine<ServoMoveContext>("ServoMoveImmed");
         servoMoveImmedSM.once((state, context) -> setPosition(context.end));
         servoMoveImmedSM.repeat((state, context) -> {
-            if (state.getTimeInState().seconds() > context.end - context.start)
+            if (state.getTimeInState().seconds() > Math.abs(context.end - context.start))
                 state.next();
         });
     }

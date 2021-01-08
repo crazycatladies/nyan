@@ -34,7 +34,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'ftc.crazycatladies'
             artifactId = 'nyan'
-            version = '0.1.8'
+            version = '0.1.9'
 
             from components.java
         }
@@ -59,8 +59,8 @@ bintray {
 		licenses = ['MIT']
 		vcsUrl = 'https://github.com/crazycatladies/nyan'
 		version {
-			name = '0.1.8'
-			desc = '0.1.8'
+			name = '0.1.9'
+			desc = '0.1.9'
 			released  = new Date()
 		}
 	}

@@ -22,6 +22,12 @@ public abstract class Subsystem {
     protected DataLogger logger;
     protected List<Subsystem> subsystems = new LinkedList<>();
     protected StateMachine<?> currentSM;
+    protected StateMachine<Subsystem> waitSM;
+
+    public Subsystem() {
+        waitSM = new StateMachine<>(this.getClass().getSimpleName() + "WaitSM");
+        waitSM.repeat((state, context) -> context.waitFor());
+    }
 
     public void addSubsystems(Subsystem ... children) {
         for (Subsystem s : children)
@@ -141,5 +147,9 @@ public abstract class Subsystem {
             if (isDone())
                 state.next();
         };
+    }
+
+    public void waitOn(Subsystem subsystem) {
+        runSM(waitSM, subsystem);
     }
 }
