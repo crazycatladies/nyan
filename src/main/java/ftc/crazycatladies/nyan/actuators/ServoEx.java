@@ -89,7 +89,6 @@ public class ServoEx extends Subsystem {
             DataLogger.putOpt(log, "position", "" + position);
             logger.log(log);
         }
-//        DataLogger.addIfNotNull(log, );
     }
 
     @Override

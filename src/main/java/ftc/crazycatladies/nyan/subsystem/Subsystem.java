@@ -26,7 +26,11 @@ public abstract class Subsystem {
 
     public Subsystem() {
         waitSM = new StateMachine<>(this.getClass().getSimpleName() + "WaitSM");
-        waitSM.repeat((state, context) -> context.waitFor());
+        waitSM.repeat((state, context) -> {
+            if (context.isDone()) {
+                state.next();
+            }
+        });
     }
 
     public void addSubsystems(Subsystem ... children) {

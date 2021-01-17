@@ -37,4 +37,13 @@ public class MultiPositionServo<P extends ServoPosition> extends ServoEx {
     public P getCurrentPosition() {
         return currentPosition;
     }
+
+    @Override
+    public String toString() {
+        return "MultiPositionServo{" +
+                "currentPosition=" + currentPosition +
+                ", name='" + name + '\'' +
+                ", position=" + position +
+                '}';
+    }
 }

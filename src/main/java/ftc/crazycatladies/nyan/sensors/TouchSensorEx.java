@@ -5,12 +5,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import ftc.crazycatladies.nyan.subsystem.Subsystem;
+import ftc.crazycatladies.schrodinger.log.DataLogger;
 import ftc.crazycatladies.schrodinger.opmode.OpModeTime;
+import ftc.crazycatladies.schrodinger.state.StateMachine;
 
 public class TouchSensorEx extends Subsystem {
     String name;
@@ -18,12 +22,19 @@ public class TouchSensorEx extends Subsystem {
     TouchSensor rt;
     Boolean isPressed;
     Class hwMapClass;
+    StateMachine<Integer> waitOnPressSM = new StateMachine<>("waitForPressSM");
 
     public TouchSensorEx(String name, int hubNum, int portNum, Class hwMapClass) {
         this.name = name;
         this.hubNum = hubNum;
         this.portNum = portNum;
         this.hwMapClass = hwMapClass;
+
+        waitOnPressSM.repeat((state, context) -> {
+            if (state.getTimeInState().milliseconds() > context || isPressed()) {
+                state.next();
+            }
+        });
     }
 
     @Override
@@ -62,10 +73,28 @@ public class TouchSensorEx extends Subsystem {
         return isPressed;
     }
 
+    public void waitOnPress(int timeoutMS) {
+        runSM(waitOnPressSM, timeoutMS);
+    }
+
+    public String getDetailedName() {
+        return this.getClass().getSimpleName() + ":" + name;
+    }
+
     @Override
     public List<String> status() {
         List<String> status = new LinkedList<>();
-        status.add(this.getClass().getSimpleName() + ":" + isPressed());
+        status.add(getDetailedName() + ":" + isPressed());
         return status;
+    }
+
+    @Override
+    public void log() {
+        super.log();
+        JSONObject json = DataLogger.createJsonObject(this.getClass().getSimpleName(), name);
+        if (isPressed != null) {
+            DataLogger.putOpt(json, "pressed", isPressed);
+            logger.log(json);
+        }
     }
 }

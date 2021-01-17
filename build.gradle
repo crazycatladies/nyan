@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    api 'ftc.crazycatladies:schrodinger:0.1.5'
+    api 'ftc.crazycatladies:schrodinger:0.2'
     implementation('org.json:json:20190722')
 	implementation files('libs/RobotCore.jar')
 	implementation files('libs/Hardware.jar')
@@ -34,7 +34,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'ftc.crazycatladies'
             artifactId = 'nyan'
-            version = '0.1.9'
+            version = '0.2'
 
             from components.java
         }
@@ -59,8 +59,8 @@ bintray {
 		licenses = ['MIT']
 		vcsUrl = 'https://github.com/crazycatladies/nyan'
 		version {
-			name = '0.1.9'
-			desc = '0.1.9'
+			name = '0.2'
+			desc = '0.2'
 			released  = new Date()
 		}
 	}
