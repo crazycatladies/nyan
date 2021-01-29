@@ -23,14 +23,16 @@ public abstract class Subsystem {
     protected List<Subsystem> subsystems = new LinkedList<>();
     protected StateMachine<?> currentSM;
     protected StateMachine<Subsystem> waitSM;
+    protected String name;
 
-    public Subsystem() {
+    public Subsystem(String name) {
         waitSM = new StateMachine<>(this.getClass().getSimpleName() + "WaitSM");
         waitSM.repeat((state, context) -> {
             if (context.isDone()) {
                 state.next();
             }
         });
+        this.name = name;
     }
 
     public void addSubsystems(Subsystem ... children) {

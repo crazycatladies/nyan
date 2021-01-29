@@ -35,9 +35,15 @@ public class DcMotorEx extends Subsystem {
             this.timeout = timeout;
             this.power = power;
         }
+
+        @Override
+        public String toString() {
+            return "MoveContext{position=" + position +
+                    ", timeout=" + timeout +
+                    ", power=" + power + '}';
+        }
     }
 
-    private String name;
     private int hubNum;
     private boolean isForward;
     private com.qualcomm.robotcore.hardware.DcMotorEx motor;
@@ -60,12 +66,12 @@ public class DcMotorEx extends Subsystem {
      * @param isForward
      */
     public DcMotorEx(String name, int hubNum, boolean isForward) {
-        this.name = name;
+        super(name);
         this.hubNum = hubNum;
         this.lastPower = 0.0;
         this.isForward = isForward;
 
-        moveToSM = new StateMachine<MoveContext>("MotorMoveTo");
+        moveToSM = new StateMachine<MoveContext>("DcMotorEx(" + name + ").moveTo");
         moveToSM.once((state, mc) -> {
             setTargetPosition(mc.position);
             setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -232,6 +238,10 @@ public class DcMotorEx extends Subsystem {
 
     public String getDetailedName() {
         return this.getClass().getSimpleName() + ":" + name;
+    }
+
+    public double getVelocity() {
+        return motor.getVelocity();
     }
 
     @Override

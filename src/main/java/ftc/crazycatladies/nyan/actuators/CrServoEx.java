@@ -12,18 +12,17 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class CrServoEx extends Subsystem {
-    String name;
     protected CRServo servo;
     Double power;
     boolean isPowerSetThisLoop;
     private DcMotorSimple.Direction direction;
 
     public CrServoEx(String name) {
-        this.name = name;
+        super(name);
     }
 
     public CrServoEx(String name, DcMotorSimple.Direction direction) {
-        this.name = name;
+        super(name);
         this.direction = direction;
     }
 

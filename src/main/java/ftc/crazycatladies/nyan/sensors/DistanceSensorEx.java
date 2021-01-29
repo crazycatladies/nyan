@@ -16,12 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 public class DistanceSensorEx extends Subsystem {
-    String name;
     DistanceSensor distanceSensor;
     private Double distance;
 
     public DistanceSensorEx(String name) {
-        this.name = name;
+        super(name);
     }
 
     @Override

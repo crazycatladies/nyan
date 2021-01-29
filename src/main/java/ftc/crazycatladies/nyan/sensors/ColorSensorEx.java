@@ -15,14 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ColorSensorEx extends Subsystem {
-    protected String name;
     ColorSensor colorSensor;
     protected Integer red;
     protected Integer green;
     protected Integer blue;
 
     public ColorSensorEx(String name) {
-        this.name = name;
+        super(name);
     }
 
     @Override

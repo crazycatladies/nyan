@@ -17,19 +17,19 @@ import ftc.crazycatladies.schrodinger.opmode.OpModeTime;
 import ftc.crazycatladies.schrodinger.state.StateMachine;
 
 public class TouchSensorEx extends Subsystem {
-    String name;
     int hubNum, portNum;
     TouchSensor rt;
-    Boolean isPressed;
+    Boolean isPressed, lastIsPressed;
     Class hwMapClass;
-    StateMachine<Integer> waitOnPressSM = new StateMachine<>("waitForPressSM");
+    StateMachine<Integer> waitOnPressSM;
 
     public TouchSensorEx(String name, int hubNum, int portNum, Class hwMapClass) {
-        this.name = name;
+        super(name);
         this.hubNum = hubNum;
         this.portNum = portNum;
         this.hwMapClass = hwMapClass;
 
+        waitOnPressSM = new StateMachine<>("TouchSensorEx(" + name + ").waitForPress");
         waitOnPressSM.repeat((state, context) -> {
             if (state.getTimeInState().milliseconds() > context || isPressed()) {
                 state.next();
@@ -56,6 +56,9 @@ public class TouchSensorEx extends Subsystem {
     }
 
     private void _loop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) {
+        if (isPressed != null) {
+            lastIsPressed = isPressed;
+        }
         isPressed = null;
         if (bulkDataResponse != null) {
             LynxGetBulkInputDataResponse bulkData = bulkDataResponse.get(hubNum);
@@ -93,8 +96,10 @@ public class TouchSensorEx extends Subsystem {
         super.log();
         JSONObject json = DataLogger.createJsonObject(this.getClass().getSimpleName(), name);
         if (isPressed != null) {
-            DataLogger.putOpt(json, "pressed", isPressed);
-            logger.log(json);
+            if (!isPressed.equals(lastIsPressed)) {
+                DataLogger.putOpt(json, "pressed", isPressed);
+                logger.log(json);
+            }
         }
     }
 }
