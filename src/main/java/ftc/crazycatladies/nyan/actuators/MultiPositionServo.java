@@ -1,8 +1,8 @@
 package ftc.crazycatladies.nyan.actuators;
 
 public class MultiPositionServo<P extends ServoPosition> extends ServoEx {
-    private final P startingPosition;
-    P currentPosition;
+    protected final P startingPosition;
+    protected P currentPosition;
 
     /**
      * @param name
@@ -14,18 +14,25 @@ public class MultiPositionServo<P extends ServoPosition> extends ServoEx {
     }
 
     public void moveTo(P position, double posPerSec) {
-        if (!isPositionSet())
-            setPosition(startingPosition.getPosition());
-
+        initStartingPos();
         moveTo(position.getPosition(), posPerSec);
         currentPosition = position;
     }
 
-    public void moveImmedTo(P position) {
+    protected void initStartingPos() {
         if (!isPositionSet())
             setPosition(startingPosition.getPosition());
+    }
 
+    public void moveImmedTo(P position) {
+        initStartingPos();
         moveImmedTo(position.getPosition());
+        currentPosition = position;
+    }
+
+    public void moveTopSpeedTo(P position) {
+        initStartingPos();
+        moveTopSpeedTo(position.getPosition());
         currentPosition = position;
     }
 

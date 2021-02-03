@@ -25,13 +25,19 @@ public class ServoEx extends Subsystem {
             this.posPerSec = posPerSec;
         }
 
+        public double getStart() {
+            return start;
+        }
+
+        public double getEnd() {
+            return end;
+        }
+
         @Override
         public String toString() {
-            return "ServoMoveContext{" +
-                    "start=" + start +
+            return "ServoMoveContext{start=" + start +
                     ", end=" + end +
-                    ", posPerSec=" + posPerSec +
-                    '}';
+                    ", posPerSec=" + posPerSec + '}';
         }
     }
 
@@ -40,6 +46,7 @@ public class ServoEx extends Subsystem {
     boolean isPositionSetThisLoop;
     private final StateMachine<ServoMoveContext> servoMoveSM;
     private final StateMachine<ServoMoveContext> servoMoveImmedSM;
+    private final StateMachine<ServoMoveContext> servoMoveTopSpeedSM;
 
     public ServoEx(String name) {
         super(name);
@@ -56,6 +63,20 @@ public class ServoEx extends Subsystem {
         servoMoveImmedSM.repeat((state, context) -> {
             if (state.getTimeInState().seconds() > Math.abs(context.end - context.start))
                 state.next();
+        });
+
+        servoMoveTopSpeedSM = new StateMachine<ServoMoveContext>("ServoEx(" + name + ").servoMoveTopSpeed");
+        servoMoveTopSpeedSM.once((state, context) -> {
+            if (context.end > context.start)
+                setPosition(1.0);
+            else
+                setPosition(0.0);
+        });
+        servoMoveTopSpeedSM.repeat((state, context) -> {
+            if (state.getTimeInState().seconds() > Math.abs(context.end - context.start)) {
+                setPosition(context.end);
+                state.next();
+            }
         });
     }
 
@@ -107,11 +128,41 @@ public class ServoEx extends Subsystem {
         return pos;
     }
 
+    /**
+     * Starts a state machine which will sweep the servo to the end position. The SM ends when the
+     * servo position has been set to the target position. It may not have reached that position
+     * yet if sweeping at high speed
+     * @param end the target position
+     * @param posPerSec speed at which to sweep (example posPerSec = 1.0 for 0.0 to 1.0 in one second)
+     */
     public void moveTo(double end, double posPerSec) {
         runSM(servoMoveSM, new ServoMoveContext(getPosition(), end, posPerSec));
     }
 
+    /**
+     * Starts a state machine which will move the servo (without sweeping) to the end position.
+     * The SM ends after an estimated time for the move to complete: # of seconds = abs(end - start).
+     * Example: move from 0.25 to 0.5 is estimated to take 0.5 seconds
+     * @param end
+     */
     public void moveImmedTo(double end) {
         runSM(servoMoveImmedSM, new ServoMoveContext(getPosition(), end, -1));
+    }
+
+    /**
+     * Starts a state machine which will move the servo to the end position as quickly as possible
+     * by intentionally overshooting as far as possible in the desired direction. The SM ends after
+     * an estimated time for the move to complete: # of seconds = abs(end - start).
+     * Example: move from 0.25 to 0.5 is estimated to take 0.5 seconds. On completion, the state
+     * machine will set position to the provided target (instead of the
+     * overshoot value).
+     *
+     * One use of this state machine is where moving the servo as quickly as possible to physical
+     * stops (where mechanically safe).
+     *
+     * @param end
+     */
+    public void moveTopSpeedTo(double end) {
+        runSM(servoMoveTopSpeedSM, new ServoMoveContext(getPosition(), end, -1));
     }
 }

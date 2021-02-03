@@ -70,16 +70,9 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
             telemetry.update();
         }
 
-        if (opModeIsActive()) {
-            Thread.sleep(1000);
-            JSONObject json = new JSONObject();
-            try {
-                json.put("done", "true");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            DataLogger.getLogger().log(json);
-        }
+        JSONObject json = new JSONObject();
+        DataLogger.putOpt(json, "done", "true");
+        DataLogger.getLogger().log(json);
         DataLogger.getLogger().stop();
     }
 
