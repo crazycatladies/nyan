@@ -80,10 +80,6 @@ public class TouchSensorEx extends Subsystem {
         runSM(waitOnPressSM, timeoutMS);
     }
 
-    public String getDetailedName() {
-        return this.getClass().getSimpleName() + ":" + name;
-    }
-
     @Override
     public List<String> status() {
         List<String> status = new LinkedList<>();

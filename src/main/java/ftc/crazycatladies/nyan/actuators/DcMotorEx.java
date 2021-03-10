@@ -51,6 +51,8 @@ public class DcMotorEx extends Subsystem {
     private Integer lastTargetPosition;
     private Integer currentPosition;
     private Integer lastPosition;
+    private Integer velocity;
+    private Integer lastVelocity;
     private Double power;
     private Double lastLoggedPower;
     private Double lastPower;
@@ -108,12 +110,14 @@ public class DcMotorEx extends Subsystem {
         if (power != null)
             lastPower = power;
 
+        lastVelocity = velocity;
         lastPosition = currentPosition;
         lastTargetPosition = targetPosition;
         lastIsBusy = isBusy;
         lastLoggedPower = power;
 
         currentPosition = null;
+        velocity = null;
         power = null;
         isBusy = null;
 
@@ -123,6 +127,7 @@ public class DcMotorEx extends Subsystem {
                 int portNumber = motor.getPortNumber();
                 currentPosition = bulkData.getEncoder(portNumber) * (isForward ? 1 : -1) * (motor.getMotorType().getOrientation() == Rotation.CW ? 1 : -1);
                 isBusy = !bulkData.isAtTarget(portNumber);
+                velocity = bulkData.getVelocity(portNumber) * (isForward ? 1 : -1) * (motor.getMotorType().getOrientation() == Rotation.CW ? 1 : -1);
             }
         }
     }
@@ -135,6 +140,9 @@ public class DcMotorEx extends Subsystem {
 
         if (currentPosition != null && !currentPosition.equals(lastPosition))
             DataLogger.putOpt(json, "currentPosition", currentPosition);
+
+        if (velocity != null && !velocity.equals(lastVelocity))
+            DataLogger.putOpt(json, "velocity", velocity);
 
         if (targetPosition != null && !targetPosition.equals(lastTargetPosition))
             DataLogger.putOpt(json, "targetPosition", targetPosition);
@@ -162,7 +170,7 @@ public class DcMotorEx extends Subsystem {
 
     public int getCurrentPosition() {
         if (currentPosition == null) {
-            RobotLog.i("Getting motor " + name + " outside of bulk call");
+            RobotLog.i("Getting motor " + name + " position outside of bulk call");
             currentPosition = motor.getCurrentPosition();
         }
 
@@ -241,7 +249,12 @@ public class DcMotorEx extends Subsystem {
     }
 
     public double getVelocity() {
-        return motor.getVelocity();
+        if (velocity == null) {
+            RobotLog.i("Getting motor " + name + " velocity outside of bulk call");
+            velocity = (int)motor.getVelocity();
+        }
+
+        return velocity;
     }
 
     @Override

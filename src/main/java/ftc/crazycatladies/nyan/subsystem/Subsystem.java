@@ -158,4 +158,8 @@ public abstract class Subsystem {
     public void waitOn(Subsystem subsystem) {
         runSM(waitSM, subsystem);
     }
+
+    public String getDetailedName() {
+        return this.getClass().getSimpleName() + ":" + name;
+    }
 }

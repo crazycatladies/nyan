@@ -4,6 +4,8 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
+def nyanVersion = '0.5.7'
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -22,6 +24,7 @@ repositories {
 dependencies {
     api 'ftc.crazycatladies:schrodinger:0.2'
     implementation('org.json:json:20190722')
+    implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 	implementation files('libs/RobotCore.jar')
 	implementation files('libs/Hardware.jar')
 
@@ -34,7 +37,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'ftc.crazycatladies'
             artifactId = 'nyan'
-            version = '0.2.3'
+            version = nyanVersion
 
             from components.java
         }
@@ -59,8 +62,8 @@ bintray {
 		licenses = ['MIT']
 		vcsUrl = 'https://github.com/crazycatladies/nyan'
 		version {
-			name = '0.2.3'
-			desc = '0.2.3'
+			name = nyanVersion
+			desc = nyanVersion
 			released  = new Date()
 		}
 	}
