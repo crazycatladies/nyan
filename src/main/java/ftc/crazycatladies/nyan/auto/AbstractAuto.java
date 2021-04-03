@@ -54,6 +54,8 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
 
     protected void autoInitLoop() {}
 
+    protected void autoStop() {}
+
     @Override
     public void runOpMode() throws InterruptedException {
         initialization();
@@ -69,6 +71,7 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
             telemetry.addData("status", robot.status());
             telemetry.update();
         }
+        autoStop();
 
         JSONObject json = new JSONObject();
         DataLogger.putOpt(json, "done", "true");

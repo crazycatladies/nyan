@@ -59,7 +59,17 @@ public class DcMotorEx extends Subsystem {
     private Boolean isBusy;
     private Boolean lastIsBusy;
     private DcMotor.RunMode mode;
+    private boolean isEncoderOnly = false;
 
+    public DcMotorEx(boolean isEncoderOnly, String name, int hubNum) {
+        super(name);
+
+        if (!isEncoderOnly)
+            throw new IllegalArgumentException();
+
+        this.isEncoderOnly = isEncoderOnly;
+        this.hubNum = hubNum;
+    }
 
     /**
      * @param name hardware map name of DC motor
@@ -90,8 +100,11 @@ public class DcMotorEx extends Subsystem {
     public void init(HardwareMap hwMap, OpModeTime time) {
         super.init(hwMap, time);
         motor = (com.qualcomm.robotcore.hardware.DcMotorEx) hwMap.dcMotor.get(name);
-        motor.setDirection(isForward ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (!isEncoderOnly) {
+            motor.setDirection(isForward ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
     }
 
     @Override
@@ -255,6 +268,10 @@ public class DcMotorEx extends Subsystem {
         }
 
         return velocity;
+    }
+
+    public DcMotor.ZeroPowerBehavior getZeroPowerBehavior() {
+        return motor.getZeroPowerBehavior();
     }
 
     @Override
