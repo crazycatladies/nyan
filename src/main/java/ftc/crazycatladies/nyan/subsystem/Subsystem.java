@@ -3,12 +3,14 @@ package ftc.crazycatladies.nyan.subsystem;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import ftc.crazycatladies.schrodinger.log.DataLogger;
 import ftc.crazycatladies.schrodinger.opmode.OpModeTime;
+import ftc.crazycatladies.schrodinger.state.State;
 import ftc.crazycatladies.schrodinger.state.StateMachine;
 import ftc.crazycatladies.schrodinger.state.StateFunction;
 
@@ -148,9 +150,17 @@ public abstract class Subsystem {
         return currentSM;
     }
 
-    public StateFunction waitFor() {
+    // Allows a different state machine to know when this one is done
+    public <T> StateFunction<T> waitFor() {
         return (state, context) -> {
             if (isDone())
+                state.next();
+        };
+    }
+
+    public <T> StateFunction<T> waitFor(State<T> s) {
+        return (state, context) -> {
+            if (s.equals(currentSM.getCurrentState()))
                 state.next();
         };
     }
@@ -161,5 +171,25 @@ public abstract class Subsystem {
 
     public String getDetailedName() {
         return this.getClass().getSimpleName() + ":" + name;
+    }
+
+    public static boolean isExternalInput(List<ExternalInput> list, ExternalInput ei) {
+        boolean found = list.contains(ei);
+        list.clear();
+        return found;
+    }
+
+    public ExternalInput getExternalInput(List<ExternalInput> list, ExternalInput... filter) {
+        for (ExternalInput f : filter) {
+            if (list.contains(f)) {
+                list.clear();
+                return f;
+            }
+        }
+        return null;
+    }
+
+    public State getCurrentState() {
+        return getCurrentStateMachine().getCurrentState();
     }
 }

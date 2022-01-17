@@ -4,7 +4,7 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4"
 }
 
-def nyanVersion = '0.5.10'
+def nyanVersion = '0.5.19'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    api 'ftc.crazycatladies:schrodinger:0.2'
+    api 'ftc.crazycatladies:schrodinger:0.3.2'
     implementation('org.json:json:20190722')
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 	implementation files('libs/RobotCore.jar')
@@ -49,7 +49,7 @@ publishing {
         }
     }
 }
-
+/*
 bintray {
     user = findProperty("bintray.user")
     key = findProperty("bintray.key")
@@ -67,4 +67,4 @@ bintray {
 			released  = new Date()
 		}
 	}
-}
+}*/
