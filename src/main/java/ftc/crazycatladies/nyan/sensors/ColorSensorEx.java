@@ -71,7 +71,9 @@ public class ColorSensorEx extends Subsystem {
     @Override
     public List<String> status() {
         List<String> status = new LinkedList<>();
-        status.add(this.getClass().getSimpleName() + ":" + red() + ":" + blue() + ":" + green());
+        if (red != null || green != null || blue != null)
+            status.add(this.getClass().getSimpleName() + ":"
+                    + red + ":" + green + ":" + blue);
         return status;
     }
 }

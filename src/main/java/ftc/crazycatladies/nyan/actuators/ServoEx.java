@@ -92,6 +92,11 @@ public class ServoEx extends Subsystem {
         isPositionSetThisLoop = true;
     }
 
+    public void setPositionWithoutEffect(double position) {
+        this.position = position;
+        isPositionSetThisLoop = true;
+    }
+
     public double getPosition() {
         return position;
     }

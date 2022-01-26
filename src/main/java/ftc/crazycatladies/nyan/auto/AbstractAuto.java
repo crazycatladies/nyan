@@ -18,12 +18,15 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
     protected GamepadEx g2;
     protected R robot;
 
+    public AbstractAuto() {
+        DataLogger.createDataLogger(new OpModeTime(this), this.getClass().getSimpleName());
+    }
+
     void initialization() throws InterruptedException {
         telemetry.addData(">", "start init");
         telemetry.update();
 
         readConfig();
-        DataLogger.createDataLogger(new OpModeTime(this), this.getClass().getSimpleName());
 
         robot.init(hardwareMap, new OpModeTime(this));
 
@@ -39,6 +42,9 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
 
             telemetry.addData("time", time.seconds());
             telemetry.update();
+
+            robot.log();
+
             idle();
         }
         waitForStart();
@@ -70,6 +76,8 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
             telemetry.addData("time", time.seconds());
             telemetry.addData("status", robot.status());
             telemetry.update();
+
+            autoLoop();
         }
         autoStop();
 
@@ -77,6 +85,9 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
         DataLogger.putOpt(json, "done", "true");
         DataLogger.getLogger().log(json);
         DataLogger.getLogger().stop();
+    }
+
+    protected void autoLoop() {
     }
 
     protected abstract StateMachine<?> stateMachine();

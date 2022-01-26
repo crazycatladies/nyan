@@ -24,8 +24,13 @@ public class MultiPositionServo<P extends ServoPosition> extends ServoEx {
             setPosition(startingPosition.getPosition());
     }
 
+    protected void initStartingPosWithoutEffect() {
+        if (!isPositionSet())
+            setPositionWithoutEffect(startingPosition.getPosition());
+    }
+
     public void moveImmedTo(P position) {
-        initStartingPos();
+        initStartingPosWithoutEffect();
         moveImmedTo(position.getPosition());
         currentPosition = position;
     }
@@ -38,6 +43,11 @@ public class MultiPositionServo<P extends ServoPosition> extends ServoEx {
 
     public void setPosition(P position) {
         setPosition(position.getPosition());
+        currentPosition = position;
+    }
+
+    public void setPositionWithoutEffect(P position) {
+        setPositionWithoutEffect(position.getPosition());
         currentPosition = position;
     }
 

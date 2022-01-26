@@ -59,6 +59,7 @@ public abstract class Subsystem {
     public void initLoop(Map<Integer, LynxGetBulkInputDataResponse> bulkDataResponse) throws InterruptedException {
         for (Subsystem s : subsystems)
             s.initLoop(bulkDataResponse);
+        runCurrentSM();
     }
 
     /**
