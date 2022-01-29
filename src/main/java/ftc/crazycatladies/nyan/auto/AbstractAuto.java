@@ -65,6 +65,7 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialization();
+        autoStart();
         robot.start();
 
         StateMachine<?> sm = stateMachine();
@@ -86,6 +87,8 @@ public abstract class AbstractAuto<R extends Subsystem> extends LinearOpMode {
         DataLogger.getLogger().log(json);
         DataLogger.getLogger().stop();
     }
+
+    protected void autoStart() {}
 
     protected void autoLoop() {
     }
