@@ -159,10 +159,11 @@ public abstract class Subsystem {
         };
     }
 
-    public <T> StateFunction<T> waitFor(State<T> s) {
+    public <T> StateFunction<T> waitFor(State<T> ... states) {
         return (state, context) -> {
-            if (s.equals(currentSM.getCurrentState()))
-                state.next();
+            for (State<T> s : states)
+                if (s.equals(currentSM.getCurrentState()))
+                    state.next();
         };
     }
 
