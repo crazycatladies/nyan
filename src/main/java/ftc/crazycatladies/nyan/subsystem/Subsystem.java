@@ -7,6 +7,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ftc.crazycatladies.schrodinger.log.DataLogger;
 import ftc.crazycatladies.schrodinger.opmode.OpModeTime;
@@ -175,19 +176,20 @@ public abstract class Subsystem {
         return this.getClass().getSimpleName() + ":" + name;
     }
 
-    public static boolean isExternalInput(List<ExternalInput> list, ExternalInput ei) {
-        boolean found = list.contains(ei);
-        list.clear();
+    public static boolean isExternalInput(Set<ExternalInput> set, ExternalInput ei) {
+        boolean found = set.contains(ei);
+        set.clear();
         return found;
     }
 
-    public ExternalInput getExternalInput(List<ExternalInput> list, ExternalInput... filter) {
+    public ExternalInput getExternalInput(Set<ExternalInput> set, ExternalInput... filter) {
         for (ExternalInput f : filter) {
-            if (list.contains(f)) {
-                list.clear();
+            if (set.contains(f)) {
+                set.clear();
                 return f;
             }
         }
+        set.clear();
         return null;
     }
 
