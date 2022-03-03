@@ -14,7 +14,7 @@ public class MultiPositionServo<P extends ServoPosition> extends ServoEx {
     }
 
     public void moveTo(P position, double posPerSec) {
-        initStartingPos();
+        initStartingPosWithoutEffect();
         moveTo(position.getPosition(), posPerSec);
         currentPosition = position;
     }
@@ -36,7 +36,7 @@ public class MultiPositionServo<P extends ServoPosition> extends ServoEx {
     }
 
     public void moveTopSpeedTo(P position) {
-        initStartingPos();
+        initStartingPosWithoutEffect();
         moveTopSpeedTo(position.getPosition());
         currentPosition = position;
     }

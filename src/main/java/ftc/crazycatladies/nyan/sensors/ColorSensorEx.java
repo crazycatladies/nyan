@@ -19,6 +19,7 @@ public class ColorSensorEx extends Subsystem {
     protected Integer red;
     protected Integer green;
     protected Integer blue;
+    protected Integer alpha;
 
     public ColorSensorEx(String name) {
         super(name);
@@ -36,6 +37,7 @@ public class ColorSensorEx extends Subsystem {
         red = null;
         green = null;
         blue = null;
+        alpha = null;
     }
 
     @Override
@@ -45,6 +47,7 @@ public class ColorSensorEx extends Subsystem {
         DataLogger.putOpt(json, "red", red);
         DataLogger.putOpt(json, "green", green);
         DataLogger.putOpt(json, "blue", blue);
+        DataLogger.putOpt(json, "alpha", alpha);
         if (json.length() > 2) {
             logger.log(json);
         }
@@ -68,12 +71,18 @@ public class ColorSensorEx extends Subsystem {
         return blue;
     }
 
+    public int alpha() {
+        if (alpha == null)
+            alpha = colorSensor.alpha();
+        return alpha;
+    }
+
     @Override
     public List<String> status() {
         List<String> status = new LinkedList<>();
-        if (red != null || green != null || blue != null)
+        if (red != null || green != null || blue != null || alpha != null)
             status.add(this.getClass().getSimpleName() + ":"
-                    + red + ":" + green + ":" + blue);
+                    + red + ":" + green + ":" + blue + ":" + alpha);
         return status;
     }
 }
